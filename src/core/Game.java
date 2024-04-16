@@ -14,6 +14,30 @@ public class Game {
      * @param startingPlayer the index of the starting player. 0 - X, 1 - O.
      */
     public Game(int startingPlayer) {
+        // Set up the O pieces at the top of the board
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                if ((i + j) % 2 == 1)
+                    board[i][j] = 'O';
+                else
+                    board[i][j] = ' ';
+            }
+        }
+        // Create blank spaces in the middle of the board
+        for (int i = 3; i <= 4; ++i) {
+            for (int j = 0; j < 8; ++j) {
+                board[i][j] = ' ';
+            }
+        }
+        // Set up the X pieces at the bottom of the board
+        for (int i = 7; i > 4; --i) {
+            for (int j = 7; j >= 0; --j) {
+                if ((i + j) % 2 == 1)
+                    board[i][j] = 'X';
+                else
+                    board[i][j] = ' ';
+            }
+        }
         currentPlayer = startingPlayer;
     }
 
