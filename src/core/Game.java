@@ -63,17 +63,26 @@ public class Game {
     }
 
     /**
-     * Works only with valid checker moves, so make sure to validate them before using this function. If true is
-     * returned, it means that the move is a kill move and the opposing checker can be removed.
-     * @param startRow the starting checker row
-     * @param startCol the starting checker column
-     * @param endRow the destination row
-     * @param endCol the destination column
-     * @return whether this move is a kill move
+     * Returns whether a piece can be attacked from the given coordinates
+     * @param startRow row to attack from
+     * @param startCol column to attack from
+     * @param endRow row to attack
+     * @param endCol column to attack
+     * @return true: selected piece is attacking selected enemy piece; false - otherwise
      */
-    public boolean isKill(int startRow, int startCol, int endRow, int endCol) {
-        // TODO
-        return false;
+    public boolean isAttacking(int startRow, int startCol, int endRow, int endCol) {
+        // Determine the vertical direction of the piece based on the current player
+        int yDirection = (currentPlayer == 0) ? -1 : 1;
+        // Determine the horizontal direction of the attack based on where the enemy is located relative to piece
+        int xDirection = (endCol < startCol) ? -1 : 1;
+        // Check whether the enemy is in the front diagonal of the selected spot
+        if (startRow + yDirection != endRow || startCol + xDirection != endCol) return false;
+        // Check whether there is vertical space behind the enemy
+        if (endRow + yDirection < 0 || endRow + yDirection > 7) return false;
+        // Check whether there is horizontal space behind the enemy
+        if (endCol + xDirection < 0 || endCol + xDirection > 7) return false;
+        // Check if there is an empty spot behind the enemy
+        return board[endRow + yDirection][endCol + xDirection] == ' ';
     }
 
     /**
