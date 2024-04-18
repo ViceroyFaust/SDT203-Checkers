@@ -78,7 +78,7 @@ public class Game {
         // Check if we can jump on the left
         if (col - 2 >= 0 && board[row + yDirection][col - 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col - 2] == emptySpot) return true;
         // Check if we can jump on the right
-        return col + 2 >= 0 && board[row + yDirection][col + 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col + 2] == emptySpot;
+        return col + 2 <= 7 && board[row + yDirection][col + 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col + 2] == emptySpot;
     }
 
     /**
@@ -101,7 +101,7 @@ public class Game {
         // Check if other pieces have to jump
         for (int i = 0; i < board.length; ++i) {
             for (int j = 0; j < board[0].length; ++j) {
-                if (canJump(coordinate)) return false;
+                if (canJump(new Coordinate(j, i))) return false;
             }
         }
         // Check left diagonal
@@ -143,7 +143,7 @@ public class Game {
         for (int i = 0; i < board.length; ++i) {
             for (int j = 0; j < board[0].length; ++j) {
                 // If a piece of the current player can move, then game is not over
-                if (players[currentPlayer] == board[i][j] && canMove(new Coordinate(j, i))) return true;
+                if (players[currentPlayer] == board[i][j] && canMove(new Coordinate(j, i))) return false;
             }
         }
         return true;
@@ -157,18 +157,20 @@ public class Game {
     public void move(Coordinate from, Coordinate to) {
         // If move is invalid, do not move
         if (!isMoveValid(from, to)) return;
-        // Move the piece and make the spot it left a space
-        board[to.y][to.x] = board[from.y][from.x];
-        board[from.y][from.x] = emptySpot;
-        // If this was a jump, clear the enemy piece
+        // If this was a jump, do jump movement and check whether we can jump again
         if (canJump(from)) {
             int yDirection = (currentPlayer == 0) ? -1 : 1;
             int xDirection = (from.x > to.x) ? -1 : 1;
             board[from.y + yDirection][from.x + xDirection] = emptySpot;
-        }
-        // If the piece cannot jump again, go to the next player
-        if (!canJump(to))
+            board[to.y][to.x] = board[from.y][from.x];
+            board[from.y][from.x] = emptySpot;
+            if (!canJump(to))
+                currentPlayer = (currentPlayer + 1) % 2;
+        } else { // Do simple forward movement
+            board[to.y][to.x] = board[from.y][from.x];
+            board[from.y][from.x] = emptySpot;
             currentPlayer = (currentPlayer + 1) % 2;
+        }
     }
 
     /**
