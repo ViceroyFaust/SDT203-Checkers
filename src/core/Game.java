@@ -27,7 +27,7 @@ public class Game {
         // Create blank spaces in the middle of the board
         for (int i = 3; i <= 4; ++i) {
             for (int j = 0; j < 8; ++j) {
-                board[i][j] = ' ';
+                board[i][j] = emptySpot;
             }
         }
         // Set up the X pieces at the bottom of the board
