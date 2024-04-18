@@ -49,6 +49,64 @@ public class Game {
     }
 
     /**
+     * Checks whether a given coordinate is valid
+     * @param row the y coordinate
+     * @param col the x coordinate
+     * @return true is the coordinate is valid; false if not
+     */
+    public boolean isCoordinateValid(int row, int col) {
+        return row >= 0 && row <= 7 && col >= 0 && col <= 7;
+    }
+
+    /**
+     * Checks whether a given piece (of the current player) can jump right now
+     * @param row the piece's row
+     * @param col the piece's column
+     * @return true if piece can jump; false otherwise
+     */
+    public boolean canJump(int row, int col) {
+        int yDirection = (currentPlayer == 0) ? -1 : 1;
+        // Check if coordinates are valid
+        if (!isCoordinateValid(row, col)) return false;
+        // Check if current player piece selected
+        if (board[row][col] != players[currentPlayer]) return false;
+        // Check whether there is enough vertical space to jump
+        if (row + 2 * yDirection < 0 || row + 2 * yDirection > 7) return false;
+        // Check if we can jump on the left
+        if (col - 2 >= 0 && board[row + yDirection][col - 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col - 2] == ' ') return true;
+        // Check if we can jump on the right
+        return col + 2 >= 0 && board[row + yDirection][col + 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col + 2] == ' ';
+    }
+
+    /**
+     * Checks whether a given piece can move
+     * @param row the piece's row
+     * @param col the piece's column
+     * @return whether a piece has available moves
+     */
+    public boolean canMove(int row, int col) {
+        int yDirection = (currentPlayer == 0) ? -1 : 1;
+        // Check whether coordinates are valid
+        if(!isCoordinateValid(row, col)) return false;
+        // Check whether current player piece is selected
+        if (board[row][col] != players[currentPlayer]) return false;
+        // Check if there is space in front of the piece
+        if (row + yDirection < 0 || row + yDirection > 7) return false;
+        // Check whether this piece can jump
+        if (canJump(row, col)) return true;
+        // Check if other pieces have to jump
+        for (int i = 0; i < board.length; ++i) {
+            for (int j = 0; j < board[0].length; ++j) {
+                if (canJump(i, j)) return false;
+            }
+        }
+        // Check left diagonal
+        if (col - 1 >= 0 && board[row + yDirection][col - 1] == ' ') return true;
+        // Check the right diagonal
+        return col + 1 <= 7 && board[row + yDirection][col + 1] == ' ';
+    }
+
+    /**
      * Validates a checker move. If the starting position starts not at a checker or the checker moves to an invalid
      * position, this function will return false.
      * @param startRow the starting checker row
@@ -57,32 +115,22 @@ public class Game {
      * @param endCol the destination column
      * @return whether the move was valid
      */
-    public boolean validateMove(int startRow, int startCol, int endRow, int endCol) {
-        // TODO
-        return false;
-    }
-
-    /**
-     * Returns whether a piece can be attacked from the given coordinates
-     * @param startRow row to attack from
-     * @param startCol column to attack from
-     * @param endRow row to attack
-     * @param endCol column to attack
-     * @return true: selected piece is attacking selected enemy piece; false - otherwise
-     */
-    public boolean isAttacking(int startRow, int startCol, int endRow, int endCol) {
-        // Determine the vertical direction of the piece based on the current player
+    public boolean isMoveValid(int startRow, int startCol, int endRow, int endCol) {
         int yDirection = (currentPlayer == 0) ? -1 : 1;
-        // Determine the horizontal direction of the attack based on where the enemy is located relative to piece
-        int xDirection = (endCol < startCol) ? -1 : 1;
-        // Check whether the enemy is in the front diagonal of the selected spot
-        if (startRow + yDirection != endRow || startCol + xDirection != endCol) return false;
-        // Check whether there is vertical space behind the enemy
-        if (endRow + yDirection < 0 || endRow + yDirection > 7) return false;
-        // Check whether there is horizontal space behind the enemy
-        if (endCol + xDirection < 0 || endCol + xDirection > 7) return false;
-        // Check if there is an empty spot behind the enemy
-        return board[endRow + yDirection][endCol + xDirection] == ' ';
+        int yDistance = endRow - startRow;
+        int xDistance = endCol - startCol;
+        // Check validity of coordinates
+        if (!isCoordinateValid(startRow, startCol) || !isCoordinateValid(endRow, endCol)) return false;
+        // Check whether the player piece is selected
+        if (board[startRow][startCol] != players[currentPlayer]) return false;
+        // Check whether piece can move
+        if (!canMove(startRow, startCol)) return false;
+        // Check whether the move spot is empty
+        if (board[endRow][endCol] != ' ') return false;
+        // If this is a jump, check whether end coordinates are correct
+        if (canJump(startRow, startCol) && startRow + 2 * yDirection == endRow && xDistance * xDistance == 4) return true;
+        // Check whether this is a diagonal jump forward
+        return yDistance == yDirection && xDistance * xDistance == 1;
     }
 
     /**
@@ -93,18 +141,6 @@ public class Game {
     public boolean isGameOver() {
         // TODO
         return false;
-    }
-
-    /**
-     * Returns the number of possible moves on a given checker. If an empty location is given (which is invalid), the
-     * function will return a negative number.
-     * @param row the row of the given checker
-     * @param col the column of the given checker
-     * @return number of possible moves of a given checker, or -1 if no checker is selected
-     */
-    public int numPossibleMoves(int row, int col) {
-        // TODO
-        return 0;
     }
 
     /**
