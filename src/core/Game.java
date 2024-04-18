@@ -5,6 +5,7 @@ package core;
  * @author Danylo Rybchynskyi
  */
 public class Game {
+    private final char emptySpot = '_';
     private final char[] players = {'X', 'O'};
     private final char[][] board = new char[8][8];
     private int currentPlayer;
@@ -18,9 +19,9 @@ public class Game {
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 8; ++j) {
                 if ((i + j) % 2 == 1)
-                    board[i][j] = 'O';
+                    board[i][j] = players[1];
                 else
-                    board[i][j] = ' ';
+                    board[i][j] = emptySpot;
             }
         }
         // Create blank spaces in the middle of the board
@@ -33,9 +34,9 @@ public class Game {
         for (int i = 7; i > 4; --i) {
             for (int j = 7; j >= 0; --j) {
                 if ((i + j) % 2 == 1)
-                    board[i][j] = 'X';
+                    board[i][j] = players[0];
                 else
-                    board[i][j] = ' ';
+                    board[i][j] = emptySpot;
             }
         }
         currentPlayer = startingPlayer;
@@ -73,9 +74,9 @@ public class Game {
         // Check whether there is enough vertical space to jump
         if (row + 2 * yDirection < 0 || row + 2 * yDirection > 7) return false;
         // Check if we can jump on the left
-        if (col - 2 >= 0 && board[row + yDirection][col - 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col - 2] == ' ') return true;
+        if (col - 2 >= 0 && board[row + yDirection][col - 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col - 2] == emptySpot) return true;
         // Check if we can jump on the right
-        return col + 2 >= 0 && board[row + yDirection][col + 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col + 2] == ' ';
+        return col + 2 >= 0 && board[row + yDirection][col + 1] == players[(currentPlayer + 1) % 2] && board[row + 2 * yDirection][col + 2] == emptySpot;
     }
 
     /**
@@ -101,9 +102,9 @@ public class Game {
             }
         }
         // Check left diagonal
-        if (col - 1 >= 0 && board[row + yDirection][col - 1] == ' ') return true;
+        if (col - 1 >= 0 && board[row + yDirection][col - 1] == emptySpot) return true;
         // Check the right diagonal
-        return col + 1 <= 7 && board[row + yDirection][col + 1] == ' ';
+        return col + 1 <= 7 && board[row + yDirection][col + 1] == emptySpot;
     }
 
     /**
@@ -126,7 +127,7 @@ public class Game {
         // Check whether piece can move
         if (!canMove(startRow, startCol)) return false;
         // Check whether the move spot is empty
-        if (board[endRow][endCol] != ' ') return false;
+        if (board[endRow][endCol] != emptySpot) return false;
         // If this is a jump, check whether end coordinates are correct
         if (canJump(startRow, startCol) && startRow + 2 * yDirection == endRow && xDistance * xDistance == 4) return true;
         // Check whether this is a diagonal jump forward
@@ -159,12 +160,12 @@ public class Game {
         if (!isMoveValid(startRow, startCol, endRow, endCol)) return;
         // Move the piece and make the spot it left a space
         board[endRow][endCol] = board[startRow][startCol];
-        board[startRow][startCol] = ' ';
+        board[startRow][startCol] = emptySpot;
         // If this was a jump, clear the enemy piece
         if (canJump(startRow, startCol)) {
             int yDirection = (currentPlayer == 0) ? -1 : 1;
             int xDirection = (startCol > endCol) ? -1 : 1;
-            board[startRow + yDirection][startCol + xDirection] = ' ';
+            board[startRow + yDirection][startCol + xDirection] = emptySpot;
         }
         // If the piece cannot jump again, go to the next player
         if (!canJump(endRow, endCol))
