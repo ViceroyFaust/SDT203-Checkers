@@ -134,13 +134,17 @@ public class Game {
     }
 
     /**
-     * Checks whether the game end state has been reached. If one of the players has lost all of their pieces or a
-     * player has exhausted all of their moves, the game is over.
+     * Checks for a game over state. The game is over if the current player can no longer make any moves.
      * @return true for game over, false for game not over
      */
     public boolean isGameOver() {
-        // TODO
-        return false;
+        for (int i = 0; i < board.length; ++i) {
+            for (int j = 0; j < board[0].length; ++j) {
+                // If a piece of the current player can move, then game is not over
+                if (players[currentPlayer] == board[i][j] && canMove(i, j)) return true;
+            }
+        }
+        return true;
     }
 
     /**
