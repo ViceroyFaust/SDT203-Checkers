@@ -155,7 +155,20 @@ public class Game {
      * @param endCol destination column
      */
     public void move(int startRow, int startCol, int endRow, int endCol) {
-        // TODO
+        // If move is invalid, do not move
+        if (!isMoveValid(startRow, startCol, endRow, endCol)) return;
+        // Move the piece and make the spot it left a space
+        board[endRow][endCol] = board[startRow][startCol];
+        board[startRow][startCol] = ' ';
+        // If this was a jump, clear the enemy piece
+        if (canJump(startRow, startCol)) {
+            int yDirection = (currentPlayer == 0) ? -1 : 1;
+            int xDirection = (startCol > endCol) ? -1 : 1;
+            board[startRow + yDirection][startCol + xDirection] = ' ';
+        }
+        // If the piece cannot jump again, go to the next player
+        if (!canJump(endRow, endCol))
+            currentPlayer = (currentPlayer + 1) % 2;
     }
 
     /**
