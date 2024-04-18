@@ -51,24 +51,26 @@ public class Game {
 
     /**
      * Checks whether a given coordinate is valid
-     * @param row the y coordinate
-     * @param col the x coordinate
+     * @param coordinate the coordinate to be checked
      * @return true is the coordinate is valid; false if not
      */
-    public boolean isCoordinateValid(int row, int col) {
+    public boolean isCoordinateValid(Coordinate coordinate) {
+        int row = coordinate.y;
+        int col = coordinate.x;
         return row >= 0 && row <= 7 && col >= 0 && col <= 7;
     }
 
     /**
      * Checks whether a given piece (of the current player) can jump right now
-     * @param row the piece's row
-     * @param col the piece's column
+     * @param coordinate The coordinate of the checker piece
      * @return true if piece can jump; false otherwise
      */
-    public boolean canJump(int row, int col) {
+    public boolean canJump(Coordinate coordinate) {
+        int row = coordinate.y;
+        int col = coordinate.x;
         int yDirection = (currentPlayer == 0) ? -1 : 1;
         // Check if coordinates are valid
-        if (!isCoordinateValid(row, col)) return false;
+        if (!isCoordinateValid(coordinate)) return false;
         // Check if current player piece selected
         if (board[row][col] != players[currentPlayer]) return false;
         // Check whether there is enough vertical space to jump
@@ -81,24 +83,25 @@ public class Game {
 
     /**
      * Checks whether a given piece can move
-     * @param row the piece's row
-     * @param col the piece's column
+     * @param coordinate the coordinate representing the checker piece
      * @return whether a piece has available moves
      */
-    public boolean canMove(int row, int col) {
+    public boolean canMove(Coordinate coordinate) {
+        int row = coordinate.y;
+        int col = coordinate.x;
         int yDirection = (currentPlayer == 0) ? -1 : 1;
         // Check whether coordinates are valid
-        if(!isCoordinateValid(row, col)) return false;
+        if(!isCoordinateValid(coordinate)) return false;
         // Check whether current player piece is selected
         if (board[row][col] != players[currentPlayer]) return false;
         // Check if there is space in front of the piece
         if (row + yDirection < 0 || row + yDirection > 7) return false;
         // Check whether this piece can jump
-        if (canJump(row, col)) return true;
+        if (canJump(coordinate)) return true;
         // Check if other pieces have to jump
         for (int i = 0; i < board.length; ++i) {
             for (int j = 0; j < board[0].length; ++j) {
-                if (canJump(i, j)) return false;
+                if (canJump(coordinate)) return false;
             }
         }
         // Check left diagonal
@@ -110,26 +113,24 @@ public class Game {
     /**
      * Validates a checker move. If the starting position starts not at a checker or the checker moves to an invalid
      * position, this function will return false.
-     * @param startRow the starting checker row
-     * @param startCol the starting checker column
-     * @param endRow the destination row
-     * @param endCol the destination column
+     * @param from The coordinate of the piece to be moved
+     * @param to The coordinate of the location to be moved to
      * @return whether the move was valid
      */
-    public boolean isMoveValid(int startRow, int startCol, int endRow, int endCol) {
+    public boolean isMoveValid(Coordinate from, Coordinate to) {
         int yDirection = (currentPlayer == 0) ? -1 : 1;
-        int yDistance = endRow - startRow;
-        int xDistance = endCol - startCol;
+        int yDistance = to.y - from.y;
+        int xDistance = to.x - from.x;
         // Check validity of coordinates
-        if (!isCoordinateValid(startRow, startCol) || !isCoordinateValid(endRow, endCol)) return false;
+        if (!isCoordinateValid(from) || !isCoordinateValid(to)) return false;
         // Check whether the player piece is selected
-        if (board[startRow][startCol] != players[currentPlayer]) return false;
+        if (board[from.y][from.x] != players[currentPlayer]) return false;
         // Check whether piece can move
-        if (!canMove(startRow, startCol)) return false;
+        if (!canMove(from)) return false;
         // Check whether the move spot is empty
-        if (board[endRow][endCol] != emptySpot) return false;
+        if (board[to.y][to.x] != emptySpot) return false;
         // If this is a jump, check whether end coordinates are correct
-        if (canJump(startRow, startCol) && startRow + 2 * yDirection == endRow && xDistance * xDistance == 4) return true;
+        if (canJump(from) && from.y + 2 * yDirection == to.y && xDistance * xDistance == 4) return true;
         // Check whether this is a diagonal jump forward
         return yDistance == yDirection && xDistance * xDistance == 1;
     }
@@ -142,7 +143,7 @@ public class Game {
         for (int i = 0; i < board.length; ++i) {
             for (int j = 0; j < board[0].length; ++j) {
                 // If a piece of the current player can move, then game is not over
-                if (players[currentPlayer] == board[i][j] && canMove(i, j)) return true;
+                if (players[currentPlayer] == board[i][j] && canMove(new Coordinate(j, i))) return true;
             }
         }
         return true;
@@ -150,25 +151,23 @@ public class Game {
 
     /**
      * Moves the given checker to a new position. Will do nothing if the positions are invalid, so be careful.
-     * @param startRow starting checker row
-     * @param startCol starting checker column
-     * @param endRow destination row
-     * @param endCol destination column
+     * @param from the coordinate of the chosen piece
+     * @param to the coordinate of the spot to be moved to
      */
-    public void move(int startRow, int startCol, int endRow, int endCol) {
+    public void move(Coordinate from, Coordinate to) {
         // If move is invalid, do not move
-        if (!isMoveValid(startRow, startCol, endRow, endCol)) return;
+        if (!isMoveValid(from, to)) return;
         // Move the piece and make the spot it left a space
-        board[endRow][endCol] = board[startRow][startCol];
-        board[startRow][startCol] = emptySpot;
+        board[to.y][to.x] = board[from.y][from.x];
+        board[from.y][from.x] = emptySpot;
         // If this was a jump, clear the enemy piece
-        if (canJump(startRow, startCol)) {
+        if (canJump(from)) {
             int yDirection = (currentPlayer == 0) ? -1 : 1;
-            int xDirection = (startCol > endCol) ? -1 : 1;
-            board[startRow + yDirection][startCol + xDirection] = emptySpot;
+            int xDirection = (from.x > to.x) ? -1 : 1;
+            board[from.y + yDirection][from.x + xDirection] = emptySpot;
         }
         // If the piece cannot jump again, go to the next player
-        if (!canJump(endRow, endCol))
+        if (!canJump(to))
             currentPlayer = (currentPlayer + 1) % 2;
     }
 
