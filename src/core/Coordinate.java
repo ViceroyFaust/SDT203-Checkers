@@ -1,16 +1,41 @@
 package core;
 
-public class Coordinate {
-    int x;
-    int y;
+import java.util.regex.Pattern;
+
+public record Coordinate(int row, int col) {
+    private static final Pattern VALID_SINGLE_INPUT = Pattern.compile("([1-8][a-h])");
+    private static final Pattern VALID_DOUBLE_INPUT = Pattern.compile("([1-8][a-h])-([1-8][a-h])");
+    private static final char FIRST_CHARACTER = 'a';
 
     /**
-     * Initializes this structure with the given coordinates
-     * @param x the X coordinate
-     * @param y the Y coordinate
+     * Parses a single checkers board input coordinate into a coordinate. Examples include 4g, 1a, etc.
+     * Regex: [1-8][a-h]
+     * @param input String representation of a checkers board coordinate
+     * @return Coordinate
      */
-    public Coordinate(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public static Coordinate parse(String input) {
+        var matcher = VALID_SINGLE_INPUT.matcher(input);
+        if (!matcher.matches()) throw new IllegalArgumentException();
+
+        int row = 8 - Character.getNumericValue(input.charAt(0));
+        int col = input.charAt(1) - FIRST_CHARACTER;
+
+        return new Coordinate(row, col);
+    }
+
+    /**
+     * Parses a double checkers board input, such as a representation of a source and destination coordinates.
+     * Example 3a-4b. Regex: ([1-8][a-h])-([1-8][a-h])
+     * @param input String representing two coordinates
+     * @return A pair of Coordinates
+     */
+    public static Coordinate[] parsePair(String input) {
+        var matcher = VALID_DOUBLE_INPUT.matcher(input);
+        if (!matcher.matches()) throw new IllegalArgumentException();
+
+        return new Coordinate[] {
+                parse(matcher.group(1)),
+                parse(matcher.group(2))
+        };
     }
 }
