@@ -5,16 +5,15 @@ package core;
  * @author Danylo Rybchynskyi
  */
 public class Game {
-    private final char emptySpot = '_';
-    private final char[] players = {'X', 'O'};
-    private final char[][] board = new char[8][8];
-    private int currentPlayer;
+    private final Board gameBoard;
+    private Player currentPlayer;
 
     /**
      * Constructs the Game class and assigns the starting player index
      * @param startingPlayer the index of the starting player. 0 - X, 1 - O.
      */
-    public Game(int startingPlayer) {
+    public Game(startingPlayer) {
+
         // Set up the O pieces at the top of the board
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 8; ++j) {

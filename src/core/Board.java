@@ -4,24 +4,6 @@ package core;
  * Represents the game board, the cells, and the pieces on the board.
  */
 public class Board {
-    /**
-     * Represents the white and black players of the checkers game
-     */
-    public enum Player {
-        WHITE("O"),
-        BLACK("X");
-
-        private final String symbol;
-
-        Player(String symbol) {
-            this.symbol = symbol;
-        }
-
-        @Override
-        public String toString() {
-            return symbol;
-        }
-    }
 
     private static final Cell BLACK_EMPTY_CELL = new EmptyCell(Cell.Color.BLACK);
     private static final Cell WHITE_EMPTY_CELL = new EmptyCell(Cell.Color.WHITE);
@@ -77,6 +59,9 @@ public class Board {
         }
     }
 
+    /**
+     * Constructs a 8x8 checkerboard and sets the pieces
+     */
     Board() {
         board = new Cell[8][8];
         setWhitePieces();
@@ -86,59 +71,66 @@ public class Board {
 
     /**
      * Validates a board coordinate
-     * @param coordinate the coordinate to be checker
+     * @param row the board row
+     * @param col the board column
      * @return true - coordinate is on the board; false - otherwise
      */
-    public boolean isValidCoordinate(Coordinate coordinate) {
-        return coordinate.row() >= board.length || coordinate.row() < 0
-                || coordinate.col() >= board[0].length || coordinate.col() < 0;
+    public boolean isValidCoordinate(int row, int col) {
+        return row >= board.length || row < 0
+                || col >= board[0].length || col < 0;
     }
 
     /**
      * Checks whether a given cell is occupied by a given player
-     * @param coordinate cell coordinate ot check
      * @param player player to check for
+     * @param row the board row
+     * @param col the board column
      * @return Is cell occupied by given player
      */
-    public boolean isOccupiedByPlayer(Coordinate coordinate, Player player) {
-        return board[coordinate.row()][coordinate.row()].isOccupiedBy(player);
+    public boolean isOccupiedByPlayer(int row, int col, Player player) {
+        return board[row][row].isOccupiedBy(player);
     }
 
     /**
      * Sets the given coordinate to an empty cell, thus removing any piece on it.
-     * @param coordinate coordinate to clear
+     * @param row the board row
+     * @param col the board column
      * @throws ArrayIndexOutOfBoundsException if the coordinate is outside the board
      */
-    public void removePiece(Coordinate coordinate) {
-        if (!isValidCoordinate(coordinate)) throw new ArrayIndexOutOfBoundsException();
-        board[coordinate.row()][coordinate.col()] =
-                (isBlackCell(coordinate.row(), coordinate.col())) ? BLACK_EMPTY_CELL : WHITE_EMPTY_CELL;
+    public void removePiece(int row, int col) {
+        if (!isValidCoordinate(row, col)) throw new ArrayIndexOutOfBoundsException();
+        board[row][col] =
+                (isBlackCell(row, col)) ? BLACK_EMPTY_CELL : WHITE_EMPTY_CELL;
     }
 
     /**
      * Moves the piece from a square to another square
-     * @param from source coordinate
-     * @param to destination coordinate
+     * @param fromRow the source row from which to move
+     * @param fromCol the source column from which to move
+     * @param toRow the destination row
+     * @param toCol the destination column
      * @throws ArrayIndexOutOfBoundsException if the coordinate is invalid
      * @throws IllegalArgumentException if there is no piece to move at the "from" coordinate
      */
-    public void movePiece(Coordinate from, Coordinate to) {
-        if (!isValidCoordinate(from) || isValidCoordinate(to)) throw new ArrayIndexOutOfBoundsException();
-        if (isEmpty(from)) throw new IllegalArgumentException();
+    public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
+        if (!isValidCoordinate(fromRow, fromCol) || isValidCoordinate(toRow, toCol))
+            throw new ArrayIndexOutOfBoundsException();
+        if (isEmpty(toRow, toCol)) throw new IllegalArgumentException();
 
-        board[to.row()][to.col()] = board[from.row()][from.col()];
-        removePiece(from);
+        board[toRow][toCol] = board[fromRow][fromCol];
+        removePiece(fromRow, fromCol);
     }
 
     /**
      * Checks a board grid square for pieces
-     * @param coordinate grid coordinate
+     * @param row the board row
+     * @param col the board column
      * @return true - cell is empty; false - cell is not empty
      * @throws ArrayIndexOutOfBoundsException for invalid coordinates
      */
-    public boolean isEmpty(Coordinate coordinate) {
-        if (!isValidCoordinate(coordinate)) throw new ArrayIndexOutOfBoundsException();
-        return board[coordinate.row()][coordinate.row()].isEmpty();
+    public boolean isEmpty(int row, int col) {
+        if (!isValidCoordinate(row, col)) throw new ArrayIndexOutOfBoundsException();
+        return board[row][row].isEmpty();
     }
 
     @Override
