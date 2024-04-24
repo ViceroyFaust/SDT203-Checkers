@@ -8,7 +8,7 @@ public class Board {
     private static final Cell BLACK_EMPTY_CELL = new EmptyCell(Cell.Color.BLACK);
     private static final Cell WHITE_EMPTY_CELL = new EmptyCell(Cell.Color.WHITE);
     private static final Cell CELL_WITH_WHITE_PIECE = new OccupiedCell(Player.WHITE);
-    private static final Cell CELL_WITH_BLACK_PIECE = new OccupiedCell(Player.WHITE);
+    private static final Cell CELL_WITH_BLACK_PIECE = new OccupiedCell(Player.BLACK);
     private final Cell[][] board;
 
     private boolean isBlackCell(int row, int col) {
@@ -76,8 +76,8 @@ public class Board {
      * @return true - coordinate is on the board; false - otherwise
      */
     public boolean isValidCoordinate(int row, int col) {
-        return row >= board.length || row < 0
-                || col >= board[0].length || col < 0;
+        return (row < board.length && row >= 0) &&
+                (col < board[0].length && col >= 0);
     }
 
     /**
@@ -88,7 +88,7 @@ public class Board {
      * @return Is cell occupied by given player
      */
     public boolean isOccupiedByPlayer(int row, int col, Player player) {
-        return board[row][row].isOccupiedBy(player);
+        return board[row][col].isOccupiedBy(player);
     }
 
     /**
@@ -113,9 +113,9 @@ public class Board {
      * @throws IllegalArgumentException if there is no piece to move at the "from" coordinate
      */
     public void movePiece(int fromRow, int fromCol, int toRow, int toCol) {
-        if (!isValidCoordinate(fromRow, fromCol) || isValidCoordinate(toRow, toCol))
+        if (!isValidCoordinate(fromRow, fromCol) || !isValidCoordinate(toRow, toCol))
             throw new ArrayIndexOutOfBoundsException();
-        if (isEmpty(toRow, toCol)) throw new IllegalArgumentException();
+        if (!isEmpty(toRow, toCol)) throw new IllegalArgumentException();
 
         board[toRow][toCol] = board[fromRow][fromCol];
         removePiece(fromRow, fromCol);
@@ -130,7 +130,15 @@ public class Board {
      */
     public boolean isEmpty(int row, int col) {
         if (!isValidCoordinate(row, col)) throw new ArrayIndexOutOfBoundsException();
-        return board[row][row].isEmpty();
+        return board[row][col].isEmpty();
+    }
+
+    public int getRows() {
+        return board.length;
+    }
+
+    public int getCols() {
+        return board[0].length;
     }
 
     @Override
@@ -144,7 +152,7 @@ public class Board {
             builder.append("\n");
         }
         builder.append("    a   b   c   d   e   f   g   h");
-
+        builder.append("\n");
         return builder.toString();
     }
 
