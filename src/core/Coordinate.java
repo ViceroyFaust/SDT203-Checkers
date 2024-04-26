@@ -8,24 +8,14 @@ public record Coordinate(int row, int col) {
     private static final char FIRST_CHARACTER = 'a';
 
     /**
-     * Checks whether a string symbol represents this object in the proper format.
-     * Regex: ([1-8][a-h])
-     * @param symbol that represents the coordinate
-     * @return true - the representation is valid; false - otherwise
-     */
-    public static boolean isStringValid(String symbol) {
-        var matcher = VALID_INPUT.matcher(symbol);
-        return matcher.matches();
-    }
-
-    /**
      * Parses a single checkers board input coordinate into a coordinate. Examples include 4g, 1a, etc.
      * Regex: [1-8][a-h]
      * @param input String representation of a checkers board coordinate
      * @return Coordinate
      */
     public static Coordinate parse(String input) {
-        if (!isStringValid(input)) throw new IllegalArgumentException();
+        var matcher = VALID_INPUT.matcher(input);
+        if (!matcher.matches()) throw new IllegalArgumentException();
 
         int row = 8 - Character.getNumericValue(input.charAt(0));
         int col = input.charAt(1) - FIRST_CHARACTER;

@@ -7,17 +7,6 @@ public record Move(Coordinate from, Coordinate to) {
     private static final Pattern VALID_INPUT = Pattern.compile("([1-8][a-h])-([1-8][a-h])");
 
     /**
-     * Checks whether a string symbol represents this object in the proper format
-     * regex: ([1-8][a-h])-([1-8][a-h])
-     * @param symbol that represents the move
-     * @return true - the representation is valid; false - otherwise
-     */
-    public static boolean isStringValid(String symbol) {
-        var matcher = VALID_INPUT.matcher(symbol);
-        return matcher.matches();
-    }
-
-    /**
      * Parses a double checkers board input, such as a representation of a source and destination coordinates.
      * Example 3a-4b. Regex: ([1-8][a-h])-([1-8][a-h])
      * @param input String representing two coordinates
