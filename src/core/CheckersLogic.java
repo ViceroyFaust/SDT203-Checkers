@@ -327,4 +327,21 @@ public class CheckersLogic {
     public String getBoardString() {
         return gameBoard.toString();
     }
+
+    /**
+     * Returns the number of possible moves for the current player
+     * @return number of moves for the current player
+     */
+    public int getMoveCount() {
+        return moves.size();
+    }
+
+    /**
+     * Returns the i'th move possible
+     * @param i - the index of the possible move
+     * @return the possible Move
+     */
+    public Move getMove(int i) {
+        return moves.get(i);
+    }
 }
