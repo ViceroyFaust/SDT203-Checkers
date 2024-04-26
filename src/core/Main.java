@@ -5,6 +5,7 @@ import ui.CheckersTextConsole;
 public class Main {
     private CheckersLogic game;
     private CheckersTextConsole ui;
+    private CheckersComputerPlayer npc;
 
     /**
      * Initializes the class
@@ -30,30 +31,48 @@ public class Main {
         return input.equals("exit");
     }
 
-    private boolean isValidMoveString(String input) {
-        return Move.isStringValid(input);
-    }
-
     private boolean isValidMove(Move move) {
         return game.isMoveValid(move);
     }
+
+    /**
+     * Prompts the user whether they want to play against the computer
+     * @return true - playing against the computer; false - otherwise
+     */
+    private boolean promptPVE() {
+        String input;
+        while(true) {
+            input = ui.promptPVP();
+            if (input.equalsIgnoreCase("c"))
+                return true;
+            if (input.equalsIgnoreCase("p"))
+                return false;
+            ui.printInputError();
+        }
+    }
+
 
     private Move getMove() {
         String input;
         Move move;
         while(true) {
             input = ui.promptMove();
-            if (!isValidMoveString(input)) {
-                ui.print("ERROR: Invalid Input. Try Again.\n");
+            try {
+                move = Move.parseMove(input);
+            } catch(IllegalArgumentException e) {
+                ui.printInputError();
                 continue;
             }
-            move = Move.parseMove(input);
             if (!isValidMove(move)) {
-                ui.print("ERROR: Invalid Move. Try Again.\n");
+                ui.printMoveError();
                 continue;
             }
             return move;
         }
+    }
+
+    private void createNPC() {
+        npc = new CheckersComputerPlayer(game);
     }
 
     /**
@@ -61,15 +80,22 @@ public class Main {
      */
     public void run() {
         boolean firstLoop = true;
+        boolean npcOpponent = false;
         Move move;
         while(!game.isGameOver()) {
             printGameBoard();
             if (firstLoop) {
                 printGameBegin();
+                npcOpponent = promptPVE();
+                if (npcOpponent) createNPC();
                 firstLoop = false;
             }
             printPlayerTurn();
-            move = getMove();
+            if (npcOpponent && game.getCurrentPlayer() == Player.WHITE) {
+                move = npc.calculateMove();
+            } else {
+                move = getMove();
+            }
             game.move(move);
         }
         ui.printWin(game.getNextPlayerString());

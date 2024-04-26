@@ -285,9 +285,7 @@ public class CheckersLogic {
      * @return true - no more moves; false - otherwise
      */
     public boolean isGameOver() {
-        currentPlayer = nextPlayer();
         calcMoves();
-        currentPlayer = nextPlayer();
         return moves.isEmpty();
     }
 
@@ -310,6 +308,14 @@ public class CheckersLogic {
      */
     public String getCurrentPlayerString() {
         return currentPlayer.toString();
+    }
+
+    /**
+     * Returns the enum representing the current player
+     * @return Player enum
+     */
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
 
     /**

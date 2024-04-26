@@ -8,6 +8,8 @@ public class CheckersTextConsole {
     private final String GAME_OVER_ANNOUNCEMENT = "Player %s has Won the Game!\n";
     private final String PROMPT_MOVE_MESSAGE = "Choose a cell position of piece to be moved and the new position (e.g., 3a-4b):\n";
     private final String PROMPT_PVP_PVE = "Enter ‘P’ if you want to play against another player; enter ‘C’ to play against computer.\n";
+    private final String ERROR_INPUT = "ERROR: Invalid Input. Try Again.\n";
+    private final String ERROR_MOVE = "ERROR: Invalid Move. Try Again.\n";
     private final Scanner in;
 
     /**
@@ -46,6 +48,20 @@ public class CheckersTextConsole {
      */
     public void print(String text) {
         System.out.print(text);
+    }
+
+    /**
+     * Notifies the user that they made an invalid input
+     */
+    public void printInputError() {
+        print(ERROR_INPUT);
+    }
+
+    /**
+     * Notifies the user that they have made an invalid move
+     */
+    public void printMoveError() {
+        print(ERROR_MOVE);
     }
 
     /**
