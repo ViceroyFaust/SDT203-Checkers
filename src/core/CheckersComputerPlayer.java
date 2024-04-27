@@ -10,6 +10,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CheckersComputerPlayer {
     private CheckersLogic logic;
 
+    /**
+     * Constructs the computerized checker player with access to the game's logic class for calculating moves
+     * @param checkersLogic game's logic class
+     */
     public CheckersComputerPlayer(CheckersLogic checkersLogic) {
         logic = checkersLogic;
     }

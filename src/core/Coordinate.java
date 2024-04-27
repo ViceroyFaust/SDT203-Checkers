@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
  * The representation of a board coordinate
  * @author Danylo Rybchynskyi
  * @version 2024-04-26
- * @param row
- * @param col
+ * @param row a row on the checkerboard
+ * @param col a column on the checkerboard
  */
 public record Coordinate(int row, int col) {
     private static final Pattern VALID_INPUT = Pattern.compile("([1-8][a-h])");

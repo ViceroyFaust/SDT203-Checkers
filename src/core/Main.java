@@ -12,6 +12,9 @@ public class Main {
     private CheckersTextConsole ui;
     private CheckersComputerPlayer npc;
 
+    /**
+     * Constructs the Main runner class with the game logic and game ui classes
+     */
     public Main() {
         game = new CheckersLogic();
         ui = new CheckersTextConsole();
@@ -107,6 +110,10 @@ public class Main {
         ui.printWin(game.getNextPlayerString());
     }
 
+    /**
+     * The program's entrypoint. The game is initialized and run through here.
+     * @param args command-line arguments. Unused.
+     */
     public static void main(String[] args) {
         Main main = new Main();
         main.run();

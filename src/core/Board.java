@@ -135,14 +135,37 @@ public class Board {
         return board[row][col].isEmpty();
     }
 
+    /**
+     * Returns the number of rows, or vertical squares, of the board
+     * @return int rows
+     */
     public int getRows() {
         return board.length;
     }
 
+    /**
+     * Returns the number of columns, or horizontal squares, of the board
+     * @return int columns
+     */
     public int getCols() {
         return board[0].length;
     }
 
+    /**
+     * Generates a String representation of the board in its current state. Shows empty spots, black player pieces, and
+     * white player pieces. Also numbers the rows and the columns.
+     * Example output:
+     * 8 | _ | o | _ | o | _ | o | _ | o |
+     * 7 | o | _ | o | _ | o | _ | o | _ |
+     * 6 | _ | o | _ | o | _ | o | _ | o |
+     * 5 | _ | _ | _ | _ | _ | _ | _ | _ |
+     * 4 | _ | _ | _ | _ | _ | _ | _ | _ |
+     * 3 | x | _ | x | _ | x | _ | x | _ |
+     * 2 | _ | x | _ | x | _ | x | _ | x |
+     * 1 | x | _ | x | _ | x | _ | x | _ |
+     *     a   b   c   d   e   f   g   h
+     * @return String representation of the board
+     */
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -162,7 +185,17 @@ public class Board {
      * The abstract representation of a board cell.
      */
     public interface Cell {
+        /**
+         * Checks whether a given board cell is empty or not
+         * @return true - the cell has no pieces on it; false - otherwise
+         */
         boolean isEmpty();
+
+        /**
+         * Checks whether a given board cell is taken by a piece of a given player
+         * @param player the player whose piece to check for
+         * @return true - the player owns a piece on this cell; false - otherwise
+         */
         boolean isOccupiedBy(Player player);
 
         /**
@@ -170,7 +203,13 @@ public class Board {
          * and black cells.
          */
         enum Color {
+            /**
+             * Black cell with an ASCII representation of it
+             */
             BLACK("_"),
+            /**
+             * White cell with an ASCII representation of it
+             */
             WHITE("_");
 
             private final String symbol;
@@ -179,6 +218,10 @@ public class Board {
                 this.symbol = symbol;
             }
 
+            /**
+             * Returns the ASCII symbol representation of the cell's color
+             * @return ASCII symbol
+             */
             @Override
             public String toString() {
                 return symbol;
@@ -202,8 +245,8 @@ public class Board {
 
         /**
          * The empty cell is never occupied by another player
-         * @param player
-         * @return
+         * @param player the player to check for
+         * @return false - this cell is always empty
          */
         @Override
         public boolean isOccupiedBy(Player player) {
