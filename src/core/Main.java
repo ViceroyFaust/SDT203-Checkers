@@ -2,14 +2,16 @@ package core;
 
 import ui.CheckersTextConsole;
 
+/**
+ * The main class that is the entrypoint of the program. It handles all of the runner logic.
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
+ */
 public class Main {
     private CheckersLogic game;
     private CheckersTextConsole ui;
     private CheckersComputerPlayer npc;
 
-    /**
-     * Initializes the class
-     */
     public Main() {
         game = new CheckersLogic();
         ui = new CheckersTextConsole();
@@ -51,7 +53,11 @@ public class Main {
         }
     }
 
-
+    /**
+     * Prompts the player for a move, then checks whether it can be parsed and whether the move is valid. If any of the
+     * checks fail, the program will notify the user of the error and will prompt for a move again.
+     * @return Move parsed from player input
+     */
     private Move getMove() {
         String input;
         Move move;

@@ -2,6 +2,11 @@ package core;
 
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * The abstract representation of a checkers computer player
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
+ */
 public class CheckersComputerPlayer {
     private CheckersLogic logic;
 

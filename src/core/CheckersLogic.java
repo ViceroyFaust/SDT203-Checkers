@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * The game class. It is responsible for the logic and state of the checkers game.
  * @author Danylo Rybchynskyi
+ * @version 2024-04-26
  */
 public class CheckersLogic {
     private final Board gameBoard;
@@ -219,14 +220,27 @@ public class CheckersLogic {
         return currentPlayer == Player.BLACK ? -1 : 1;
     }
 
+    /**
+     * Moves a single piece with a standard forward move
+     * @param move the Move forward to make
+     */
     private void moveForward(Move move) {
         gameBoard.movePiece(move.from().row(), move.from().col(), move.to().row(), move.to().col());
     }
 
+    /**
+     * Calculates the column direction that a move makes
+     * @param move the move to make
+     * @return the column direction of the move
+     */
     private ColumnDirection moveColumnDirection(Move move) {
         return move.from().col() > move.to().col() ? ColumnDirection.LEFT : ColumnDirection.RIGHT;
     }
 
+    /**
+     * Moves a single piece with a jump
+     * @param move the jump move
+     */
     private void jump(Move move) {
         gameBoard.movePiece(move.from().row(), move.from().col(), move.to().row(), move.to().col());
         int removalRow = move.from().row() + rowDirection();
@@ -289,6 +303,13 @@ public class CheckersLogic {
         return moves.isEmpty();
     }
 
+    /**
+     * Moves the player according to the move provided. If it is a forward move, will move forward. If it is a jump, it
+     * will jump and automatically remove any captured pieces. However, if the move is invalid, the function will throw
+     * an exception.
+     * @param move the move to make
+     * @throws IllegalArgumentException when the move is invalid
+     */
     public void move(Move move) {
         calcMoves();
         if (!isMoveValid(move)) throw new IllegalArgumentException();

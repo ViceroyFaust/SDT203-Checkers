@@ -3,6 +3,13 @@ package core;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * The representation of a board coordinate
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
+ * @param row
+ * @param col
+ */
 public record Coordinate(int row, int col) {
     private static final Pattern VALID_INPUT = Pattern.compile("([1-8][a-h])");
     private static final char FIRST_CHARACTER = 'a';

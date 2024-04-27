@@ -3,6 +3,13 @@ package core;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+/**
+ * Represents a move on a checkerboard
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
+ * @param from the origin coordinate
+ * @param to the destination coordinate
+ */
 public record Move(Coordinate from, Coordinate to) {
     private static final Pattern VALID_INPUT = Pattern.compile("([1-8][a-h])-([1-8][a-h])");
 

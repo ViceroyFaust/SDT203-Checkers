@@ -2,6 +2,8 @@ package core;
 
 /**
  * Represents the game board, the cells, and the pieces on the board.
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
  */
 public class Board {
 
@@ -184,12 +186,25 @@ public class Board {
         }
     }
 
+    /**
+     * The abstract representation of an empty cell on a board. It has a colour of either black or white.
+     * @param color the colour of the cell
+     */
     private record EmptyCell(Color color) implements Cell {
+        /**
+         * The empty cell is always empty
+         * @return true
+         */
         @Override
         public boolean isEmpty() {
             return true;
         }
 
+        /**
+         * The empty cell is never occupied by another player
+         * @param player
+         * @return
+         */
         @Override
         public boolean isOccupiedBy(Player player) {
             return false;
@@ -201,12 +216,25 @@ public class Board {
         }
     }
 
+    /**
+     * The abstract representation of an occupied cell. It holds a player.
+     * @param player the player who owns the piece in this cell
+     */
     private record OccupiedCell(Player player) implements Cell {
+        /**
+         * The occupied cell is never empty
+         * @return false
+         */
         @Override
         public boolean isEmpty() {
             return false;
         }
 
+        /**
+         * The occupied cell can only be occupied by one player at a time
+         * @param player the player to check for
+         * @return true - it is occupied by the given player; false - otherwise
+         */
         @Override
         public boolean isOccupiedBy(Player player) {
             return this.player == player;

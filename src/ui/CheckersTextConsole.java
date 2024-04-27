@@ -2,6 +2,12 @@ package ui;
 
 import java.util.Scanner;
 
+/**
+ * A utility class used for interacting with the user via the computer terminal. It is responsible for printing Strings
+ * on the terminal screen and for getting user input.
+ * @author Danylo Rybchynskyi
+ * @version 2024-04-26
+ */
 public class CheckersTextConsole {
     private final String PLAYER_TURN_ANNOUNCEMENT = "Player %s - your turn.\n";
     private final String GAME_BEGIN_ANNOUNCEMENT = "Begin game. ";
