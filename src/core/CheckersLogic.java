@@ -6,7 +6,7 @@ import java.util.ArrayList;
 /**
  * The game class. It is responsible for the logic and state of the checkers game.
  * @author Danylo Rybchynskyi
- * @version 2024-04-26
+ * @version 2024-04-27
  */
 public class CheckersLogic {
     private final Board gameBoard;
@@ -92,7 +92,9 @@ public class CheckersLogic {
         int targetRow = row + 2 * rowDirection();
         int targetCol = col + 2 * colDirection.toInt();
 
-        return gameBoard.isValidCoordinate(targetRow, targetCol) && gameBoard.isEmpty(targetRow, targetCol);
+        return gameBoard.isValidCoordinate(targetRow, targetCol) &&
+                gameBoard.isEmpty(targetRow, targetCol) &&
+                hasEnemyPiece(row, col, colDirection);
     }
 
     /**
