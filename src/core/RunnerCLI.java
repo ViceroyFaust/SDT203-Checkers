@@ -7,7 +7,7 @@ import ui.CheckersTextConsole;
  * @author Danylo Rybchynskyi
  * @version 2024-04-26
  */
-public class Main {
+public class RunnerCLI {
     private CheckersLogic game;
     private CheckersTextConsole ui;
     private CheckersComputerPlayer npc;
@@ -15,7 +15,7 @@ public class Main {
     /**
      * Constructs the Main runner class with the game logic and game ui classes
      */
-    public Main() {
+    public RunnerCLI() {
         game = new CheckersLogic();
         ui = new CheckersTextConsole();
     }
@@ -111,11 +111,12 @@ public class Main {
     }
 
     /**
-     * The program's entrypoint. The game is initialized and run through here.
+     * A JavaFX application will ignore this main method. This method is deprecated for the terminal-only version of the
+     * program.
      * @param args command-line arguments. Unused.
      */
     public static void main(String[] args) {
-        Main main = new Main();
+        RunnerCLI main = new RunnerCLI();
         main.run();
     }
 }
