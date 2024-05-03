@@ -6,15 +6,10 @@ import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import rybchynskyi.checkersgui.core.CheckersLogic;
-import rybchynskyi.checkersgui.core.Coordinate;
-import rybchynskyi.checkersgui.core.Move;
+import rybchynskyi.checkersgui.core.*;
 
 public class CheckersGUI extends Application {
     private final double ROOT_PADDING = 12;
@@ -34,13 +29,20 @@ public class CheckersGUI extends Application {
     private final String CHOOSE_PIECE_STATUS = "Please choose a checker";
     private final String CHOOSE_DESTINATION_STATUS = "Please make a move";
 
-    private Label moveStatusLabel = new Label(CHOOSE_PIECE_STATUS);
-    private Label playerStatusLabel = new Label(PLAYER_BLACK_STATUS);
-
+    private final Alert CLIorGUIAlert = new Alert(Alert.AlertType.CONFIRMATION,
+            "Would you like to play with the GUI?", ButtonType.YES, ButtonType.NO);
+    /** TODO implement computer player
+    private final Alert computerOrPlayerAlert = new Alert(Alert.AlertType.CONFIRMATION,
+            "Would you like to play against a Human or the Computer?",
+            new ButtonType("Human"), new ButtonType("Computer")); */
     private final Alert invalidMoveAlert = new Alert(Alert.AlertType.ERROR, "Error: Illegal move!", ButtonType.OK);
     private final Alert gameOverAlert = new Alert(Alert.AlertType.CONFIRMATION);
 
+    private Label moveStatusLabel = new Label(CHOOSE_PIECE_STATUS);
+    private Label playerStatusLabel = new Label(PLAYER_BLACK_STATUS);
+
     private final CheckersLogic game = new CheckersLogic();
+    private CheckersComputerPlayer computerPlayer = null;
     private Coordinate selectedChecker = null;
 
     private void initButtonGridPane() {
@@ -88,6 +90,7 @@ public class CheckersGUI extends Application {
         root.add(moveStatusLabel, 0, 2);
     }
 
+    // TODO implement computer player
     private void handleCheckerButtons(ActionEvent event) {
         Button button = (Button) event.getSource();
         int id = Integer.parseInt(button.getId());
@@ -113,7 +116,7 @@ public class CheckersGUI extends Application {
                 System.exit(0);
             }
             moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
-            playerStatusLabel.setText((game.getCurrentPlayerString().equals("X")) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
+            playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
         } else {
             selectedChecker = currentSelection;
             moveStatusLabel.setText(CHOOSE_DESTINATION_STATUS);
@@ -122,6 +125,18 @@ public class CheckersGUI extends Application {
 
     @Override
     public void start(Stage stage) {
+        CLIorGUIAlert.showAndWait();
+        if (CLIorGUIAlert.getResult() == ButtonType.NO) {
+            RunnerCLI cli = new RunnerCLI();
+            cli.run();
+            return;
+        }
+        /* TODO implement computer player
+        computerOrPlayerAlert.showAndWait();
+        if (computerOrPlayerAlert.getResult().getText().equals("Computer")) {
+            System.out.println(computerOrPlayerAlert.getResult().getText());
+            computerPlayer = new CheckersComputerPlayer(game);
+        } */
         initCheckerButtons();
         updateButtons();
         initButtonGridPane();
