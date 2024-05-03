@@ -31,10 +31,9 @@ public class CheckersGUI extends Application {
 
     private final Alert CLIorGUIAlert = new Alert(Alert.AlertType.CONFIRMATION,
             "Would you like to play with the GUI?", ButtonType.YES, ButtonType.NO);
-    /** TODO implement computer player
     private final Alert computerOrPlayerAlert = new Alert(Alert.AlertType.CONFIRMATION,
             "Would you like to play against a Human or the Computer?",
-            new ButtonType("Human"), new ButtonType("Computer")); */
+            new ButtonType("Human"), new ButtonType("Computer"));
     private final Alert invalidMoveAlert = new Alert(Alert.AlertType.ERROR, "Error: Illegal move!", ButtonType.OK);
     private final Alert gameOverAlert = new Alert(Alert.AlertType.CONFIRMATION);
 
@@ -90,6 +89,16 @@ public class CheckersGUI extends Application {
         root.add(moveStatusLabel, 0, 2);
     }
 
+    private void checkGameOver() {
+        if (game.isGameOver()) {
+            gameOverAlert.setTitle("Game Over!");
+            gameOverAlert.setContentText(game.getNextPlayerString().equals("X") ? BLACK_WIN : WHITE_WIN);
+            gameOverAlert.showAndWait();
+            Platform.exit();
+            System.exit(0);
+        }
+    }
+
     // TODO implement computer player
     private void handleCheckerButtons(ActionEvent event) {
         Button button = (Button) event.getSource();
@@ -108,15 +117,17 @@ public class CheckersGUI extends Application {
                 invalidMoveAlert.showAndWait();
             }
             updateButtons();
-            if (game.isGameOver()) {
-                gameOverAlert.setTitle("Game Over!");
-                gameOverAlert.setContentText(game.getNextPlayerString().equals("X") ? BLACK_WIN : WHITE_WIN);
-                gameOverAlert.showAndWait();
-                Platform.exit();
-                System.exit(0);
-            }
+            checkGameOver();
             moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
             playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
+            while (computerPlayer != null && game.getCurrentPlayer() == Player.WHITE) {
+                move = computerPlayer.calculateMove();
+                game.move(move);
+                updateButtons();
+                checkGameOver();
+                moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
+                playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
+            }
         } else {
             selectedChecker = currentSelection;
             moveStatusLabel.setText(CHOOSE_DESTINATION_STATUS);
@@ -131,12 +142,11 @@ public class CheckersGUI extends Application {
             cli.run();
             return;
         }
-        /* TODO implement computer player
         computerOrPlayerAlert.showAndWait();
         if (computerOrPlayerAlert.getResult().getText().equals("Computer")) {
             System.out.println(computerOrPlayerAlert.getResult().getText());
             computerPlayer = new CheckersComputerPlayer(game);
-        } */
+        }
         initCheckerButtons();
         updateButtons();
         initButtonGridPane();
