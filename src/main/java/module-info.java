@@ -1,6 +1,7 @@
 module rybchynskyi.checkersgui {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.desktop;
 
 
     exports rybchynskyi.checkersgui.ui;

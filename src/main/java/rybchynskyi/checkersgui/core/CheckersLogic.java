@@ -358,6 +358,16 @@ public class CheckersLogic {
     }
 
     /**
+     * Returns the symbol of the cell at a given location
+     * @param row the board row
+     * @param col the board column
+     * @return cell symbol
+     */
+    public String getSymbol(int row, int col) {
+        return gameBoard.getSymbol(row, col);
+    }
+
+    /**
      * Returns the number of possible moves for the current player
      * @return number of moves for the current player
      */

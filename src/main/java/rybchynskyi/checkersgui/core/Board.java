@@ -166,7 +166,6 @@ public class Board {
      *     a   b   c   d   e   f   g   h
      * @return String representation of the board
      */
-    @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < board.length; ++i) {
@@ -179,6 +178,16 @@ public class Board {
         builder.append("    a   b   c   d   e   f   g   h");
         builder.append("\n");
         return builder.toString();
+    }
+
+    /**
+     * Returns the symbol of the cell at a given location
+     * @param row the board row
+     * @param col the board column
+     * @return cell symbol
+     */
+    public String getSymbol(int row, int col) {
+        return board[row][col].toString();
     }
 
     /**
