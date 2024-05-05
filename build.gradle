@@ -26,7 +26,11 @@ tasks.withType(JavaCompile) {
 
 application {
     mainModule = 'rybchynskyi.checkersgui'
-    mainClass = 'rybchynskyi.checkersgui.core.HelloApplication'
+    mainClass = 'rybchynskyi.checkersgui.ui.CheckersGUI'
+}
+
+run {
+    standardInput = System.in
 }
 
 javafx {
