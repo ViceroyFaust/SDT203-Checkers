@@ -11,6 +11,12 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import rybchynskyi.checkersgui.core.*;
 
+/**
+ * The main class of the JavaFX version of the Checkers application. As of 2024-05-05 houses the GUI logic, GUI input
+ * processing, and other logic, for I have no experience with MVC.
+ * @author Danylo Rybchynskyi
+ * @version 2024-05-05
+ */
 public class CheckersGUI extends Application {
     private final double ROOT_PADDING = 12;
     private final double BUTTON_PADDING = 1;
@@ -37,8 +43,8 @@ public class CheckersGUI extends Application {
     private final Alert invalidMoveAlert = new Alert(Alert.AlertType.ERROR, "Error: Illegal move!", ButtonType.OK);
     private final Alert gameOverAlert = new Alert(Alert.AlertType.CONFIRMATION);
 
-    private Label moveStatusLabel = new Label(CHOOSE_PIECE_STATUS);
-    private Label playerStatusLabel = new Label(PLAYER_BLACK_STATUS);
+    private final Label moveStatusLabel = new Label(CHOOSE_PIECE_STATUS);
+    private final Label playerStatusLabel = new Label(PLAYER_BLACK_STATUS);
 
     private final CheckersLogic game = new CheckersLogic();
     private CheckersComputerPlayer computerPlayer = null;
@@ -99,17 +105,59 @@ public class CheckersGUI extends Application {
         }
     }
 
-    // TODO implement computer player
-    private void handleCheckerButtons(ActionEvent event) {
+    private int rowFromId(int id) {
+        return id / BUTTON_COLS;
+    }
+
+    private int colFromId(int id) {
+        return id % BUTTON_COLS;
+    }
+
+    private int getButtonId(ActionEvent event) {
         Button button = (Button) event.getSource();
-        int id = Integer.parseInt(button.getId());
-        int row = id / BUTTON_COLS;
-        int col = id % BUTTON_COLS;
-        Coordinate currentSelection = new Coordinate(row, col);
-        System.out.println("Clicked row " + row + ", col " + col);
-        if (selectedChecker != null) {
+        return Integer.parseInt(button.getId());
+    }
+
+    private Coordinate coordinateFromId(int id) {
+        return new Coordinate(rowFromId(id), colFromId(id));
+    }
+
+    private boolean isCheckerSelected() {
+        return selectedChecker != null;
+    }
+
+    private void resetSelectedChecker() {
+        selectedChecker = null;
+    }
+
+    private void setStatusLabelChoosePiece() {
+        moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
+    }
+
+    private void setStatusLabelChooseDestination() {
+        moveStatusLabel.setText(CHOOSE_DESTINATION_STATUS);
+    }
+
+    private void updatePlayerStatusLabel() {
+        playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ?
+                PLAYER_BLACK_STATUS :
+                PLAYER_WHITE_STATUS);
+    }
+
+    private boolean isComputerOpponent() {
+        return computerPlayer != null;
+    }
+
+    private boolean isComputerOpponentTurn() {
+        return game.getCurrentPlayer() == Player.WHITE;
+    }
+
+    private void handleCheckerButtons(ActionEvent event) {
+        int id = getButtonId(event);
+        Coordinate currentSelection = coordinateFromId(id);
+        if (isCheckerSelected()) {
             Move move = new Move(selectedChecker, currentSelection);
-            selectedChecker = null;
+            resetSelectedChecker();
             try {
                 game.move(move);
             } catch(IllegalArgumentException e) {
@@ -118,22 +166,29 @@ public class CheckersGUI extends Application {
             }
             updateButtons();
             checkGameOver();
-            moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
-            playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
-            while (computerPlayer != null && game.getCurrentPlayer() == Player.WHITE) {
+            setStatusLabelChoosePiece();
+            updatePlayerStatusLabel();
+            while (isComputerOpponent() && isComputerOpponentTurn()) {
                 move = computerPlayer.calculateMove();
                 game.move(move);
                 updateButtons();
                 checkGameOver();
-                moveStatusLabel.setText(CHOOSE_PIECE_STATUS);
-                playerStatusLabel.setText((game.getCurrentPlayer() == Player.BLACK) ? PLAYER_BLACK_STATUS : PLAYER_WHITE_STATUS);
+                setStatusLabelChoosePiece();
+                updatePlayerStatusLabel();
             }
         } else {
             selectedChecker = currentSelection;
-            moveStatusLabel.setText(CHOOSE_DESTINATION_STATUS);
+            setStatusLabelChooseDestination();
         }
     }
 
+    /**
+     * Starts the GUI application
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     * Applications may create other stages, if needed, but they will not be
+     * primary stages.
+     */
     @Override
     public void start(Stage stage) {
         CLIorGUIAlert.showAndWait();
@@ -157,6 +212,10 @@ public class CheckersGUI extends Application {
         stage.show();
     }
 
+    /**
+     * Used as a fallback to launch the JavaFX application
+     * @param args the command-line arguments (currently unused)
+     */
     public static void main(String[] args) {
         launch();
     }
