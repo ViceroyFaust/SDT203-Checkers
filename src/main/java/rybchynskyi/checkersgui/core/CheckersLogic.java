@@ -289,6 +289,7 @@ public class CheckersLogic {
      * @return true - move is valid; false - otherwise
      */
     public boolean isMoveValid(Move move) {
+        calcMoves();
         for (Move validMove : moves) {
             if (validMove.equals(move))
                 return true;
@@ -313,7 +314,6 @@ public class CheckersLogic {
      * @throws IllegalArgumentException when the move is invalid
      */
     public void move(Move move) {
-        calcMoves();
         if (!isMoveValid(move)) throw new IllegalArgumentException();
         if (!jumpPieces.isEmpty()) {
             jump(move);
@@ -372,6 +372,8 @@ public class CheckersLogic {
      * @return number of moves for the current player
      */
     public int getMoveCount() {
+        if (moves.isEmpty())
+            calcMoves();
         return moves.size();
     }
 
